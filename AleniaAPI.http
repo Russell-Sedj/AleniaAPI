@@ -1,0 +1,6 @@
+@AleniaAPI_HostAddress = http://localhost:5126
+
+GET {{AleniaAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
