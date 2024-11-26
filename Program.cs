@@ -34,6 +34,8 @@ namespace AleniaAPI
 
             app.UseAuthorization();
 
+            // Use CORS policy (security breach to fix !!!)
+            app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
             app.MapControllers();
 
