@@ -7,6 +7,6 @@ namespace AleniaAPI.Data
     {
         public AleniaContext(DbContextOptions<AleniaContext> options) : base(options) { }
 
-        public DbSet<Mission> Missions { get; set; }
+        public DbSet<Missions> Missions { get; set; }
     }
 }
