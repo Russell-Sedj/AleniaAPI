@@ -4,6 +4,7 @@ using AleniaAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AleniaAPI.Migrations
 {
     [DbContext(typeof(AleniaContext))]
-    partial class AleniaContextModelSnapshot : ModelSnapshot
+    [Migration("20250114111641_AddEtablissementsTable3")]
+    partial class AddEtablissementsTable3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,11 +27,9 @@ namespace AleniaAPI.Migrations
 
             modelBuilder.Entity("AleniaAPI.Models.Etablissements", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Nom")
                         .IsRequired()
@@ -41,11 +42,9 @@ namespace AleniaAPI.Migrations
 
             modelBuilder.Entity("AleniaAPI.Models.Missions", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("DateDebut")
                         .HasColumnType("datetime(6)");
@@ -57,8 +56,8 @@ namespace AleniaAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("EtablissementsId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("EtablissementsId")
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Poste")
                         .IsRequired()

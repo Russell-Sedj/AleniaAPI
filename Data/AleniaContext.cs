@@ -8,5 +8,6 @@ namespace AleniaAPI.Data
         public AleniaContext(DbContextOptions<AleniaContext> options) : base(options) { }
 
         public DbSet<Missions> Missions { get; set; }
+        public DbSet<Etablissements> Etablissements { get; set; }
     }
 }

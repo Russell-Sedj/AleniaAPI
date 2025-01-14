@@ -4,6 +4,7 @@ using AleniaAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AleniaAPI.Migrations
 {
     [DbContext(typeof(AleniaContext))]
-    partial class AleniaContextModelSnapshot : ModelSnapshot
+    [Migration("20250114113307_AddEtablissementsTable4")]
+    partial class AddEtablissementsTable4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,7 +60,10 @@ namespace AleniaAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("EtablissementsId")
+                    b.Property<Guid>("EtablissementsId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("EtablissementsId1")
                         .HasColumnType("int");
 
                     b.Property<string>("Poste")
@@ -69,7 +75,7 @@ namespace AleniaAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EtablissementsId");
+                    b.HasIndex("EtablissementsId1");
 
                     b.ToTable("Missions");
                 });
@@ -78,7 +84,7 @@ namespace AleniaAPI.Migrations
                 {
                     b.HasOne("AleniaAPI.Models.Etablissements", "Etablissements")
                         .WithMany("Missions")
-                        .HasForeignKey("EtablissementsId")
+                        .HasForeignKey("EtablissementsId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
