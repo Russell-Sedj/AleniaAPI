@@ -38,6 +38,13 @@ namespace AleniaAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Mission>> PostMission(Mission mission)
         {
+            // Check if the EtablissementId is valid first
+            var etablissement = await _context.Etablissements.FindAsync(mission.EtablissementId);
+            if (etablissement == null)
+            {
+                return BadRequest("Etablissement not found");
+            }
+
             _context.Missions.Add(mission);
             await _context.SaveChangesAsync();
 
@@ -50,6 +57,12 @@ namespace AleniaAPI.Controllers
             if (id != mission.Id)
             {
                 return BadRequest();
+            }
+
+            var etablissement = await _context.Etablissements.FindAsync(mission.EtablissementId);
+            if (etablissement == null)
+            {
+                return BadRequest("Etablissement not found");
             }
 
             _context.Entry(mission).State = EntityState.Modified;
