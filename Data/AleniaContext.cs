@@ -11,5 +11,13 @@ namespace AleniaAPI.Data
         // so i let the s at the end of the property name
         public DbSet<Mission> Missions { get; set; }
         public DbSet<Etablissement> Etablissements { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Mission>()
+                .HasOne(m => m.Etablissement)
+                .WithMany(e => e.Missions)
+                .HasForeignKey(m => m.EtablissementId);
+        }
     }
 }
