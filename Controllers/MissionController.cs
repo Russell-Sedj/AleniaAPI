@@ -7,25 +7,25 @@ namespace AleniaAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MissionsController : ControllerBase
+    public class MissionController : ControllerBase
     {
         private readonly AleniaContext _context;
 
-        public MissionsController(AleniaContext context)
+        public MissionController(AleniaContext context)
         {
             _context = context;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Missions>>> GetMissions()
+        public async Task<ActionResult<IEnumerable<Mission>>> GetMissions()
         {
-            return await _context.Missions.ToListAsync();
+            return await _context.Mission.ToListAsync();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Missions>> GetMission(Guid id)
+        public async Task<ActionResult<Mission>> GetMission(Guid id)
         {
-            var mission = await _context.Missions.FindAsync(id);
+            var mission = await _context.Mission.FindAsync(id);
 
             if (mission == null)
             {
@@ -36,16 +36,16 @@ namespace AleniaAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Missions>> PostMission(Missions mission)
+        public async Task<ActionResult<Mission>> PostMission(Mission mission)
         {
-            _context.Missions.Add(mission);
+            _context.Mission.Add(mission);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetMission), new { id = mission.Id }, mission);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMission(Guid id, Missions mission)
+        public async Task<IActionResult> PutMission(Guid id, Mission mission)
         {
             if (id != mission.Id)
             {
@@ -76,13 +76,13 @@ namespace AleniaAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMission(Guid id)
         {
-            var mission = await _context.Missions.FindAsync(id);
+            var mission = await _context.Mission.FindAsync(id);
             if (mission == null)
             {
                 return NotFound();
             }
 
-            _context.Missions.Remove(mission);
+            _context.Mission.Remove(mission);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -90,7 +90,7 @@ namespace AleniaAPI.Controllers
 
         private bool MissionExists(Guid id)
         {
-            return _context.Missions.Any(e => e.Id == id);
+            return _context.Mission.Any(e => e.Id == id);
         }
     }
 }
