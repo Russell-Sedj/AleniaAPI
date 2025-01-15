@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using AleniaAPI.Data;
+using System.Text.Json.Serialization;
 
 namespace AleniaAPI
 {
@@ -10,8 +11,12 @@ namespace AleniaAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+                });
 
-            builder.Services.AddControllers();
             builder.Services.AddDbContext<AleniaContext>(options =>
                 options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
                 new MySqlServerVersion(new Version(8, 2, 12))));
