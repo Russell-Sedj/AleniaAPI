@@ -7,6 +7,6 @@
         public string Status { get; set; }
 
         public Guid EtablissementId { get; set; }
-        public Etablissement Etablissement { get; set; }
+        public Etablissement? Etablissement { get; set; } // added this ? to make it facultative
     }
 }
