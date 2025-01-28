@@ -19,7 +19,7 @@ namespace AleniaAPI
 
             builder.Services.AddDbContext<AleniaContext>(options =>
                 options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
-                new MySqlServerVersion(new Version(8, 2, 12))));
+                new MySqlServerVersion(new Version(8, 2, 13))));
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
