@@ -1,9 +1,11 @@
 ﻿namespace AleniaAPI.Models
 {
-    public class Etablissement
+    public class Etablissement : Utilisateur
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public ICollection<Mission> Missions { get; set; }
+        public string Nom { get; set; }
+        public string Adresse { get; set; }
+        public string? Telephone { get; set; }
+        public string? TypeEtablissement { get; set; } // Hôpital, Clinique, Laboratoire, etc.
+        public ICollection<Mission>? Missions { get; set; }
     }
 }
