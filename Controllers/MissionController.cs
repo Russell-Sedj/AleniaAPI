@@ -45,6 +45,12 @@ namespace AleniaAPI.Controllers
                 return BadRequest("Etablissement not found");
             }
 
+            // Mettre la meme adresse que etablissement si adresse est vide
+            if (string.IsNullOrEmpty(mission.Adresse))
+            {
+                mission.Adresse = etablissement.Adresse;
+            }
+
             _context.Missions.Add(mission);
             await _context.SaveChangesAsync();
 
@@ -63,6 +69,12 @@ namespace AleniaAPI.Controllers
             if (etablissement == null)
             {
                 return BadRequest("Etablissement not found");
+            }
+
+            // Mettre la meme adresse que etablissement si adresse est vide
+            if (string.IsNullOrEmpty(mission.Adresse))
+            {
+                mission.Adresse = etablissement.Adresse;
             }
 
             _context.Entry(mission).State = EntityState.Modified;
