@@ -51,6 +51,9 @@ namespace AleniaAPI.Controllers
                 mission.Adresse = etablissement.Adresse;
             }
 
+            // Définir la date de publication à la date du jour
+            mission.DatePublication = DateTime.Now;
+
             _context.Missions.Add(mission);
             await _context.SaveChangesAsync();
 
