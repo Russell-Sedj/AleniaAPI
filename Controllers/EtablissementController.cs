@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using AleniaAPI.Data;
 using AleniaAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AleniaAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EtablissementController : ControllerBase
