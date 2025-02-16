@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AleniaAPI.Migrations
 {
     [DbContext(typeof(AleniaContext))]
-    [Migration("20250129011032_all_Classes_added")]
-    partial class all_Classes_added
+    [Migration("20250216165624_new_model_test_jwt_auth")]
+    partial class new_model_test_jwt_auth
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -137,6 +137,9 @@ namespace AleniaAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("DatePublication")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
@@ -145,6 +148,13 @@ namespace AleniaAPI.Migrations
 
                     b.Property<string>("Horaires")
                         .HasColumnType("longtext");
+
+                    b.Property<string>("Poste")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<float>("TauxHoraire")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -166,7 +176,7 @@ namespace AleniaAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("MotDePasse")
+                    b.Property<string>("MotDePassHash")
                         .IsRequired()
                         .HasColumnType("longtext");
 

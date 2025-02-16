@@ -173,7 +173,7 @@ namespace AleniaAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("MotDePasse")
+                    b.Property<string>("MotDePassHash")
                         .IsRequired()
                         .HasColumnType("longtext");
 
