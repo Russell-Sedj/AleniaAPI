@@ -26,29 +26,61 @@ namespace AleniaAPI.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<AuthResponse>> Register(RegisterModel model)
         {
-            if (!new[] { "admin", "etablissement", "interimaire" }.Contains(model.Role.ToLower()))
-            {
-                return BadRequest("Rôle invalide");
-            }
-
             if (await _context.Utilisateurs.AnyAsync(u => u.Email == model.Email))
             {
                 return BadRequest("Email déjà utilisé");
             }
 
-            var utilisateur = new Utilisateur
+            Utilisateur utilisateur;
+            switch (model.Role.ToLower())
             {
-                Email = model.Email,
-                MotDePassHash = BCrypt.Net.BCrypt.HashPassword(model.MotDePass),
-                Role = model.Role,
-                DateCreation = DateTime.Now
-            };
+                case "admin":
+                    utilisateur = new Admin
+                    {
+                        Email = model.Email,
+                        MotDePassHash = BCrypt.Net.BCrypt.HashPassword(model.MotDePass),
+                        Role = "admin",
+                        DateCreation = DateTime.Now,
+                        Pseudo = model.Pseudo ?? "Admin"
+                    };
+                    break;
+
+                case "etablissement":
+                    utilisateur = new Etablissement
+                    {
+                        Email = model.Email,
+                        MotDePassHash = BCrypt.Net.BCrypt.HashPassword(model.MotDePass),
+                        Role = "etablissement",
+                        DateCreation = DateTime.Now,
+                        Nom = model.Nom ?? "",
+                        Adresse = model.Adresse ?? "",
+                        Telephone = model.Telephone ?? "",
+                        TypeEtablissement = model.TypeEtablissement ?? ""
+                    };
+                    break;
+
+                case "interimaire":
+                    utilisateur = new Interimaire
+                    {
+                        Email = model.Email,
+                        MotDePassHash = BCrypt.Net.BCrypt.HashPassword(model.MotDePass),
+                        Role = "interimaire",
+                        DateCreation = DateTime.Now,
+                        Nom = model.Nom ?? "",
+                        Prenom = model.Prenom ?? "",
+                        Adresse = model.Adresse ?? "",
+                        Telephone = model.Telephone ?? "",
+                    };
+                    break;
+
+                default:
+                    return BadRequest("Type d'utilisateur non valide");
+            }
 
             _context.Utilisateurs.Add(utilisateur);
             await _context.SaveChangesAsync();
 
             var token = GenerateJwtToken(utilisateur);
-
             return Ok(new AuthResponse
             {
                 Token = token,

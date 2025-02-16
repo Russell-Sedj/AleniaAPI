@@ -16,5 +16,19 @@ namespace AleniaAPI.Models.Auth
         [RegularExpression("^(admin|etablissement|interimaire)$",
          ErrorMessage = "Le rôle doit être 'admin', 'etablissement' ou 'interimaire'")]
         public string Role { get; set; }
+
+        // Propriétés spécifiques pour Admin
+        public string? Pseudo { get; set; }
+
+        // Propriétés spécifiques pour Etablissement
+        public string? Nom { get; set; }
+        public string? Adresse { get; set; }
+        public string? Telephone { get; set; }
+        public string? TypeEtablissement { get; set; }
+
+        // Propriétés spécifiques pour Interimaire
+        public string? Prenom { get; set; }
+        public List<string>? Competences { get; set; }
+        public string? Disponibilites { get; set; }
     }
 }
