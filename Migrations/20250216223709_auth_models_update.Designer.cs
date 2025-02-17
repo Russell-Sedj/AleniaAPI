@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AleniaAPI.Migrations
 {
     [DbContext(typeof(AleniaContext))]
-    [Migration("20250216165624_new_model_test_jwt_auth")]
-    partial class new_model_test_jwt_auth
+    [Migration("20250216223709_auth_models_update")]
+    partial class auth_models_update
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

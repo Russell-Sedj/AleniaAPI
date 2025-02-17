@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AleniaAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class new_model_test_jwt_auth : Migration
+    public partial class auth_models_update : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
