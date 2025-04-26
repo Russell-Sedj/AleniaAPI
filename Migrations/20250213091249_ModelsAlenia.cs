@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AleniaAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class all_Classes_added : Migration
+    public partial class ModelsAlenia : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

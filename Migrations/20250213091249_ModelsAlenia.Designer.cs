@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AleniaAPI.Migrations
 {
     [DbContext(typeof(AleniaContext))]
-    [Migration("20250129011032_all_Classes_added")]
-    partial class all_Classes_added
+    [Migration("20250213091249_ModelsAlenia")]
+    partial class ModelsAlenia
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
