@@ -2,10 +2,13 @@ using AleniaAPI.Models;
 using AleniaAPI.DTOs;
 
 namespace AleniaAPI.Services
-{    public interface IAuthService
+{
+    public interface IAuthService
     {
         Task<UtilisateurDto?> LoginAsync(LoginDto loginDto);
         Task<InterimaireDto?> RegisterInterimaireAsync(CreateInterimaireDto createDto);
+        Task<EtablissementDto?> LoginEtablissementAsync(LoginEtablissementDto loginDto);
+        Task<EtablissementDto?> RegisterEtablissementAsync(CreateEtablissementDto createDto);
         Task<bool> ChangePasswordAsync(Guid userId, ChangePasswordDto changePasswordDto);
         Task<bool> EmailExistsAsync(string email);
         Task<Utilisateur?> GetUserByEmailAsync(string email);

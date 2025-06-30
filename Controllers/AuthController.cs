@@ -69,6 +69,62 @@ namespace AleniaAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "Erreur interne du serveur", error = ex.Message });
+            }        }
+
+        [HttpPost("login-etablissement")]
+        public async Task<ActionResult<object>> LoginEtablissement(LoginEtablissementDto loginDto)
+        {
+            try
+            {
+                var etablissement = await _authService.LoginEtablissementAsync(loginDto);
+                if (etablissement == null)
+                {
+                    return Unauthorized(new { message = "Email ou mot de passe incorrect" });
+                }
+
+                // Récupérer l'établissement complet pour générer le token
+                var etablissementEntity = await _authService.GetUserByEmailAsync(loginDto.Email);
+                if (etablissementEntity == null)
+                {
+                    return Unauthorized(new { message = "Établissement non trouvé" });
+                }
+
+                var token = _authService.GenerateJwtToken(etablissementEntity);
+
+                return Ok(new
+                {
+                    etablissement = etablissement,
+                    token = token,
+                    message = "Connexion réussie"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erreur interne du serveur", error = ex.Message });
+            }
+        }
+
+        [HttpPost("register-etablissement")]
+        public async Task<ActionResult<EtablissementDto>> RegisterEtablissement(CreateEtablissementDto createDto)
+        {
+            try
+            {
+                if (createDto.MotDePasse != createDto.ConfirmMotDePasse)
+                {
+                    return BadRequest(new { message = "Les mots de passe ne correspondent pas" });
+                }
+
+                var etablissement = await _authService.RegisterEtablissementAsync(createDto);
+                if (etablissement == null)
+                {
+                    return BadRequest(new { message = "L'email est déjà utilisé" });
+                }
+
+                return CreatedAtAction(nameof(RegisterEtablissement), new { id = etablissement.Id }, etablissement);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erreur interne du serveur", error = ex.Message });
             }
         }
 

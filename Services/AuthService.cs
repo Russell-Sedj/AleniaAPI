@@ -94,6 +94,71 @@ namespace AleniaAPI.Services
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<EtablissementDto?> LoginEtablissementAsync(LoginEtablissementDto loginDto)
+        {
+            var etablissement = await _context.Etablissements
+                .FirstOrDefaultAsync(e => e.Email == loginDto.Email);
+
+            if (etablissement == null || !VerifyPassword(loginDto.MotDePasse, etablissement.MotDePasse))
+            {
+                return null;
+            }
+
+            return new EtablissementDto
+            {
+                Id = etablissement.Id,
+                Email = etablissement.Email,
+                Nom = etablissement.Nom,
+                Responsable = etablissement.Responsable,
+                Adresse = etablissement.Adresse,
+                Telephone = etablissement.Telephone,
+                TypeEtablissement = etablissement.TypeEtablissement,
+                NumeroSiret = etablissement.NumeroSiret,
+                Description = etablissement.Description,
+                DateCreation = etablissement.DateCreation
+            };
+        }
+
+        public async Task<EtablissementDto?> RegisterEtablissementAsync(CreateEtablissementDto createDto)
+        {
+            if (await EmailExistsAsync(createDto.Email))
+            {
+                return null; // Email déjà utilisé
+            }
+
+            var etablissement = new Etablissement
+            {
+                Id = Guid.NewGuid(),
+                Email = createDto.Email,
+                MotDePasse = HashPassword(createDto.MotDePasse),
+                Nom = createDto.Nom,
+                Responsable = createDto.Responsable,
+                Adresse = createDto.Adresse,
+                Telephone = createDto.Telephone,
+                TypeEtablissement = createDto.TypeEtablissement,
+                NumeroSiret = createDto.NumeroSiret,
+                Description = createDto.Description,
+                DateCreation = DateTime.UtcNow
+            };
+
+            _context.Etablissements.Add(etablissement);
+            await _context.SaveChangesAsync();
+
+            return new EtablissementDto
+            {
+                Id = etablissement.Id,
+                Email = etablissement.Email,
+                Nom = etablissement.Nom,
+                Responsable = etablissement.Responsable,
+                Adresse = etablissement.Adresse,
+                Telephone = etablissement.Telephone,
+                TypeEtablissement = etablissement.TypeEtablissement,
+                NumeroSiret = etablissement.NumeroSiret,
+                Description = etablissement.Description,
+                DateCreation = etablissement.DateCreation
+            };
         }        public async Task<bool> EmailExistsAsync(string email)
         {
             return await _context.Utilisateurs.AnyAsync(u => u.Email == email);
