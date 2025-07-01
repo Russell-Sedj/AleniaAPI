@@ -18,26 +18,17 @@ namespace AleniaAPI.DTOs
         public required string Email { get; set; }
         public required string MotDePasse { get; set; }
         public required string ConfirmMotDePasse { get; set; }
-    }    public class ChangePasswordDto
+    }
+
+    public class ChangePasswordDto
     {
         public required string AncienMotDePasse { get; set; }
         public required string NouveauMotDePasse { get; set; }
         public required string ConfirmNouveauMotDePasse { get; set; }
     }
 
-    public class EtablissementDto
-    {
-        public Guid Id { get; set; }
-        public string Email { get; set; } = string.Empty;
-        public string Nom { get; set; } = string.Empty;
-        public string Responsable { get; set; } = string.Empty;
-        public string Adresse { get; set; } = string.Empty;
-        public string Telephone { get; set; } = string.Empty;
-        public string TypeEtablissement { get; set; } = string.Empty;
-        public string NumeroSiret { get; set; } = string.Empty;
-        public string? Description { get; set; }
-        public DateTime DateCreation { get; set; }
-    }
+    // SUPPRIMEZ CETTE SECTION - EtablissementDto existe déjà dans EtablissementDto.cs
+    // public class EtablissementDto { ... }
 
     public class CreateEtablissementDto
     {

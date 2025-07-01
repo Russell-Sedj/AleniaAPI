@@ -10,6 +10,6 @@ namespace AleniaAPI.Services
         Task<MissionDto?> CreateMissionAsync(CreateMissionDto createDto);
         Task<MissionDto?> UpdateMissionAsync(Guid id, UpdateMissionDto updateDto);
         Task<bool> DeleteMissionAsync(Guid id);
-        Task<IEnumerable<MissionDto>> SearchMissionsAsync(string? poste, string? adresse, float? tauxMin, float? tauxMax);
+        Task<IEnumerable<MissionDto>> SearchMissionsAsync(string? poste, string? adresse, decimal? tauxMin, decimal? tauxMax); // Changé float en decimal
     }
 }

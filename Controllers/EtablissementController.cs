@@ -1,96 +1,71 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using AleniaAPI.Data;
-using AleniaAPI.Models;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using AleniaAPI.Services;
+using AleniaAPI.DTOs;
+using System.Security.Claims;
 
 namespace AleniaAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class EtablissementController : ControllerBase
     {
-        private readonly AleniaContext _context;
+        private readonly IEtablissementService _etablissementService;
 
-        public EtablissementController(AleniaContext context)
+        public EtablissementController(IEtablissementService etablissementService)
         {
-            _context = context;
+            _etablissementService = etablissementService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Etablissement>>> GetEtablissements()
+        [HttpGet("current")]
+        public async Task<IActionResult> GetCurrentEtablissement()
         {
-            return await _context.Etablissements.ToListAsync();
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Etablissement>> GetEtablissement(Guid id)
-        {
-            var etablissement = await _context.Etablissements.FindAsync(id);
-
-            if (etablissement == null)
-            {
-                return NotFound();
-            }
-
-            return etablissement;
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<Etablissement>> PostEtablissement(Etablissement etablissement)
-        {
-            _context.Etablissements.Add(etablissement);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetEtablissement), new { id = etablissement.Id }, etablissement);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutEtablissement(Guid id, Etablissement etablissement)
-        {
-            if (id != etablissement.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(etablissement).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EtablissementExists(id))
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
                 {
-                    return NotFound();
+                    return Unauthorized("Utilisateur non authentifié");
                 }
-                else
-                {
-                    throw;
-                }
-            }
 
-            return NoContent();
+                var etablissement = await _etablissementService.GetEtablissementByIdAsync(Guid.Parse(userId));
+                if (etablissement == null)
+                {
+                    return NotFound("Établissement non trouvé");
+                }
+
+                return Ok(etablissement);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erreur lors de la récupération de l'établissement", error = ex.Message });
+            }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEtablissement(Guid id)
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateEtablissement([FromBody] UpdateEtablissementDto updateDto)
         {
-            var etablissement = await _context.Etablissements.FindAsync(id);
-            if (etablissement == null)
+            try
             {
-                return NotFound();
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Unauthorized("Utilisateur non authentifié");
+                }
+
+                var result = await _etablissementService.UpdateEtablissementAsync(Guid.Parse(userId), updateDto);
+                if (result == null)
+                {
+                    return NotFound("Établissement non trouvé");
+                }
+
+                return Ok(new { message = "Établissement mis à jour avec succès", etablissement = result });
             }
-
-            _context.Etablissements.Remove(etablissement);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool EtablissementExists(Guid id)
-        {
-            return _context.Etablissements.Any(e => e.Id == id);
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erreur lors de la mise à jour", error = ex.Message });
+            }
         }
     }
 }

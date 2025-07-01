@@ -8,7 +8,7 @@ namespace AleniaAPI.DTOs
         public string Poste { get; set; } = string.Empty;
         public string Adresse { get; set; } = string.Empty;
         public string? Description { get; set; }
-        public float TauxHoraire { get; set; }
+        public decimal TauxHoraire { get; set; } // DOIT être decimal
         public List<string>? Horaires { get; set; }
         public DateTime DatePublication { get; set; }
         public int NombreCandidatures { get; set; }
@@ -20,7 +20,7 @@ namespace AleniaAPI.DTOs
         public required string Poste { get; set; }
         public required string Adresse { get; set; }
         public string? Description { get; set; }
-        public required float TauxHoraire { get; set; }
+        public required decimal TauxHoraire { get; set; } // DOIT être decimal
         public List<string>? Horaires { get; set; }
     }
 
@@ -29,7 +29,7 @@ namespace AleniaAPI.DTOs
         public string? Poste { get; set; }
         public string? Adresse { get; set; }
         public string? Description { get; set; }
-        public float? TauxHoraire { get; set; }
+        public decimal? TauxHoraire { get; set; } // DOIT être decimal
         public List<string>? Horaires { get; set; }
     }
 

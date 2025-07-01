@@ -51,13 +51,14 @@ namespace AleniaAPI
             builder.Services.AddScoped<IMissionService, MissionService>();
             builder.Services.AddScoped<ICandidatureService, CandidatureService>();
             builder.Services.AddScoped<IInterimaireService, InterimaireService>();
+            builder.Services.AddScoped<IEtablissementService, EtablissementManagementService>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new() { Title = "Alenia API", Version = "v1" });
-                
+
                 // Add JWT authentication to Swagger
                 c.AddSecurityDefinition("Bearer", new()
                 {

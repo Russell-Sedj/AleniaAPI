@@ -30,7 +30,7 @@ namespace AleniaAPI.Services
                     TauxHoraire = m.TauxHoraire,
                     Horaires = m.Horaires,
                     DatePublication = m.DatePublication,
-                    NombreCandidatures = m.Candidatures != null ? m.Candidatures.Count : 0
+                    NombreCandidatures = m.Candidatures.Count
                 })
                 .ToListAsync();
         }
@@ -52,49 +52,73 @@ namespace AleniaAPI.Services
                     TauxHoraire = m.TauxHoraire,
                     Horaires = m.Horaires,
                     DatePublication = m.DatePublication,
-                    NombreCandidatures = m.Candidatures != null ? m.Candidatures.Count : 0
+                    NombreCandidatures = m.Candidatures.Count
                 })
                 .ToListAsync();
         }
 
         public async Task<MissionDetailDto?> GetMissionByIdAsync(Guid id)
         {
-            return await _context.Missions
+            var mission = await _context.Missions
                 .Include(m => m.Etablissement)
                 .Include(m => m.Candidatures)
-                    .ThenInclude(c => c.Interimaire)
                 .Where(m => m.Id == id)
-                .Select(m => new MissionDetailDto
-                {
-                    Id = m.Id,
-                    EtablissementId = m.EtablissementId,
-                    EtablissementNom = m.Etablissement != null ? m.Etablissement.Nom : "",
-                    Poste = m.Poste,
-                    Adresse = m.Adresse,
-                    Description = m.Description,
-                    TauxHoraire = m.TauxHoraire,
-                    Horaires = m.Horaires,
-                    DatePublication = m.DatePublication,
-                    NombreCandidatures = m.Candidatures != null ? m.Candidatures.Count : 0,
-                    Candidatures = m.Candidatures!.Select(c => new CandidatureDto
-                    {
-                        Id = c.Id,
-                        MissionId = c.MissionId,
-                        MissionPoste = m.Poste,
-                        MissionEtablissement = m.Etablissement != null ? m.Etablissement.Nom : "",
-                        InterimaireId = c.InterimaireId,
-                        InterimaireNom = c.Interimaire != null ? c.Interimaire.Nom : "",
-                        InterimairePrenom = c.Interimaire != null ? c.Interimaire.Prenom : "",
-                        Statut = c.Statut,
-                        DateCandidature = c.DateCandidature,
-                        HorairesChoisis = c.HorairesChoisis
-                    }).ToList()
-                })
                 .FirstOrDefaultAsync();
+
+            if (mission == null) return null;
+
+            var candidatures = new List<CandidatureDto>();
+            if (mission.Candidatures != null)
+            {
+                foreach (var candidature in mission.Candidatures)
+                {
+                    await _context.Entry(candidature)
+                        .Reference(c => c.Interimaire)
+                        .LoadAsync();
+
+                    candidatures.Add(new CandidatureDto
+                    {
+                        Id = candidature.Id,
+                        MissionId = candidature.MissionId,
+                        MissionPoste = mission.Poste,
+                        MissionEtablissement = mission.Etablissement?.Nom ?? "",
+                        InterimaireId = candidature.InterimaireId,
+                        InterimaireNom = candidature.Interimaire?.Nom ?? "",
+                        InterimairePrenom = candidature.Interimaire?.Prenom ?? "",
+                        Statut = candidature.Statut,
+                        DateCandidature = candidature.DateCandidature,
+                        HorairesChoisis = candidature.HorairesChoisis
+                    });
+                }
+            }
+
+            return new MissionDetailDto
+            {
+                Id = mission.Id,
+                EtablissementId = mission.EtablissementId,
+                EtablissementNom = mission.Etablissement?.Nom ?? "",
+                Poste = mission.Poste,
+                Adresse = mission.Adresse,
+                Description = mission.Description,
+                TauxHoraire = mission.TauxHoraire,
+                Horaires = mission.Horaires,
+                DatePublication = mission.DatePublication,
+                NombreCandidatures = mission.Candidatures?.Count ?? 0,
+                Candidatures = candidatures
+            };
         }
 
         public async Task<MissionDto?> CreateMissionAsync(CreateMissionDto createDto)
         {
+            // Vérifier que l'établissement existe
+            var etablissementExiste = await _context.Etablissements
+                .AnyAsync(e => e.Id == createDto.EtablissementId);
+
+            if (!etablissementExiste)
+            {
+                throw new ArgumentException($"Aucun établissement trouvé avec l'ID: {createDto.EtablissementId}");
+            }
+
             var mission = new Mission
             {
                 Id = Guid.NewGuid(),
@@ -108,10 +132,18 @@ namespace AleniaAPI.Services
             };
 
             _context.Missions.Add(mission);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Erreur lors de la sauvegarde de la mission: {ex.Message}", ex);
+            }
 
             // Récupérer la mission avec l'établissement
-            return await _context.Missions
+            var result = await _context.Missions
                 .Include(m => m.Etablissement)
                 .Where(m => m.Id == mission.Id)
                 .Select(m => new MissionDto
@@ -128,6 +160,13 @@ namespace AleniaAPI.Services
                     NombreCandidatures = 0
                 })
                 .FirstOrDefaultAsync();
+
+            if (result == null)
+            {
+                throw new InvalidOperationException("La mission a été créée mais n'a pas pu être récupérée");
+            }
+
+            return result;
         }
 
         public async Task<MissionDto?> UpdateMissionAsync(Guid id, UpdateMissionDto updateDto)
@@ -163,7 +202,7 @@ namespace AleniaAPI.Services
                     TauxHoraire = m.TauxHoraire,
                     Horaires = m.Horaires,
                     DatePublication = m.DatePublication,
-                    NombreCandidatures = m.Candidatures != null ? m.Candidatures.Count : 0
+                    NombreCandidatures = m.Candidatures.Count
                 })
                 .FirstOrDefaultAsync();
         }
@@ -178,7 +217,7 @@ namespace AleniaAPI.Services
             return true;
         }
 
-        public async Task<IEnumerable<MissionDto>> SearchMissionsAsync(string? poste, string? adresse, float? tauxMin, float? tauxMax)
+        public async Task<IEnumerable<MissionDto>> SearchMissionsAsync(string? poste, string? adresse, decimal? tauxMin, decimal? tauxMax)
         {
             var query = _context.Missions
                 .Include(m => m.Etablissement)
@@ -209,7 +248,7 @@ namespace AleniaAPI.Services
                     TauxHoraire = m.TauxHoraire,
                     Horaires = m.Horaires,
                     DatePublication = m.DatePublication,
-                    NombreCandidatures = m.Candidatures != null ? m.Candidatures.Count : 0
+                    NombreCandidatures = m.Candidatures.Count
                 })
                 .ToListAsync();
         }

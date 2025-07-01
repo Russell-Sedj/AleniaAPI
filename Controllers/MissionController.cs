@@ -75,6 +75,14 @@ namespace AleniaAPI.Controllers
 
                 return CreatedAtAction(nameof(GetMission), new { id = mission.Id }, mission);
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "Erreur interne du serveur", error = ex.Message });
@@ -121,10 +129,10 @@ namespace AleniaAPI.Controllers
 
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<MissionDto>>> SearchMissions(
-            [FromQuery] string? poste,
-            [FromQuery] string? adresse,
-            [FromQuery] float? tauxMin,
-            [FromQuery] float? tauxMax)
+            [FromQuery] string? poste = null,
+            [FromQuery] string? adresse = null,
+            [FromQuery] decimal? tauxMin = null,    // Changé float en decimal
+            [FromQuery] decimal? tauxMax = null)    // Changé float en decimal
         {
             try
             {
@@ -133,7 +141,7 @@ namespace AleniaAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Erreur interne du serveur", error = ex.Message });
+                return StatusCode(500, new { message = "Erreur lors de la recherche des missions", error = ex.Message });
             }
         }
     }
