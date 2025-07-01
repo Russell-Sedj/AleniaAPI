@@ -18,6 +18,7 @@ namespace AleniaAPI.Data
         public DbSet<Mission> Missions { get; set; }
         public DbSet<Candidature> Candidatures { get; set; }
         public DbSet<Evaluation> Evaluations { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -63,6 +64,11 @@ namespace AleniaAPI.Data
                 .HasOne(e => e.Mission)
                 .WithMany()
                 .HasForeignKey(e => e.MissionId);
+
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.Interimaire)
+                .WithMany()
+                .HasForeignKey(m => m.InterimaireId);
         }
     }
 }

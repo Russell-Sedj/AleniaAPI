@@ -124,6 +124,55 @@ namespace AleniaAPI.Migrations
                     b.ToTable("Evaluations");
                 });
 
+            modelBuilder.Entity("AleniaAPI.Models.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Categorie")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Contenu")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("DateEnvoi")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Expediteur")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<bool>("Important")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<Guid>("InterimaireId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("Lu")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Sujet")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<bool>("Urgent")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InterimaireId");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("AleniaAPI.Models.Mission", b =>
                 {
                     b.Property<Guid>("Id")
@@ -343,6 +392,17 @@ namespace AleniaAPI.Migrations
                     b.Navigation("Cible");
 
                     b.Navigation("Mission");
+                });
+
+            modelBuilder.Entity("AleniaAPI.Models.Message", b =>
+                {
+                    b.HasOne("AleniaAPI.Models.Interimaire", "Interimaire")
+                        .WithMany()
+                        .HasForeignKey("InterimaireId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Interimaire");
                 });
 
             modelBuilder.Entity("AleniaAPI.Models.Mission", b =>
