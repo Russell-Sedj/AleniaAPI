@@ -134,14 +134,29 @@ namespace AleniaAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime?>("DateMission")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<DateTime>("DatePublication")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("DureeHeures")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("EstPlanifiee")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<Guid>("EtablissementId")
                         .HasColumnType("char(36)");
+
+                    b.Property<TimeSpan?>("HeureDebut")
+                        .HasColumnType("time(6)");
+
+                    b.Property<TimeSpan?>("HeureFin")
+                        .HasColumnType("time(6)");
 
                     b.Property<string>("Horaires")
                         .HasColumnType("longtext");
@@ -150,8 +165,8 @@ namespace AleniaAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<float>("TauxHoraire")
-                        .HasColumnType("float");
+                    b.Property<decimal>("TauxHoraire")
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
 

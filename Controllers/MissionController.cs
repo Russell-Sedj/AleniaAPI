@@ -63,7 +63,7 @@ namespace AleniaAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<MissionDto>> CreateMission(CreateMissionDto createDto)
+        public async Task<ActionResult<MissionDto>> CreateMission([FromBody] CreateMissionDto createDto)
         {
             try
             {

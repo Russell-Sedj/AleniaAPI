@@ -24,13 +24,19 @@ namespace AleniaAPI.Services
                     Id = m.Id,
                     EtablissementId = m.EtablissementId,
                     EtablissementNom = m.Etablissement != null ? m.Etablissement.Nom : "",
+                    EtablissementTelephone = m.Etablissement != null ? m.Etablissement.Telephone : "",
                     Poste = m.Poste,
                     Adresse = m.Adresse,
                     Description = m.Description,
                     TauxHoraire = m.TauxHoraire,
                     Horaires = m.Horaires,
                     DatePublication = m.DatePublication,
-                    NombreCandidatures = m.Candidatures.Count
+                    NombreCandidatures = m.Candidatures.Count,
+                    DateMission = m.DateMission,
+                    HeureDebut = m.HeureDebut,
+                    HeureFin = m.HeureFin,
+                    DureeHeures = m.DureeHeures,
+                    EstPlanifiee = m.EstPlanifiee
                 })
                 .ToListAsync();
         }
@@ -46,13 +52,19 @@ namespace AleniaAPI.Services
                     Id = m.Id,
                     EtablissementId = m.EtablissementId,
                     EtablissementNom = m.Etablissement != null ? m.Etablissement.Nom : "",
+                    EtablissementTelephone = m.Etablissement != null ? m.Etablissement.Telephone : "",
                     Poste = m.Poste,
                     Adresse = m.Adresse,
                     Description = m.Description,
                     TauxHoraire = m.TauxHoraire,
                     Horaires = m.Horaires,
                     DatePublication = m.DatePublication,
-                    NombreCandidatures = m.Candidatures.Count
+                    NombreCandidatures = m.Candidatures.Count,
+                    DateMission = m.DateMission,
+                    HeureDebut = m.HeureDebut,
+                    HeureFin = m.HeureFin,
+                    DureeHeures = m.DureeHeures,
+                    EstPlanifiee = m.EstPlanifiee
                 })
                 .ToListAsync();
         }
@@ -104,6 +116,11 @@ namespace AleniaAPI.Services
                 Horaires = mission.Horaires,
                 DatePublication = mission.DatePublication,
                 NombreCandidatures = mission.Candidatures?.Count ?? 0,
+                DateMission = mission.DateMission,
+                HeureDebut = mission.HeureDebut,
+                HeureFin = mission.HeureFin,
+                DureeHeures = mission.DureeHeures,
+                EstPlanifiee = mission.EstPlanifiee,
                 Candidatures = candidatures
             };
         }
@@ -128,7 +145,12 @@ namespace AleniaAPI.Services
                 Description = createDto.Description,
                 TauxHoraire = createDto.TauxHoraire,
                 Horaires = createDto.Horaires,
-                DatePublication = DateTime.UtcNow
+                DatePublication = DateTime.UtcNow,
+                DateMission = createDto.DateMission,
+                HeureDebut = createDto.HeureDebut,
+                HeureFin = createDto.HeureFin,
+                DureeHeures = createDto.DureeHeures,
+                EstPlanifiee = createDto.DateMission.HasValue && createDto.HeureDebut.HasValue
             };
 
             _context.Missions.Add(mission);
@@ -151,13 +173,19 @@ namespace AleniaAPI.Services
                     Id = m.Id,
                     EtablissementId = m.EtablissementId,
                     EtablissementNom = m.Etablissement != null ? m.Etablissement.Nom : "",
+                    EtablissementTelephone = m.Etablissement != null ? m.Etablissement.Telephone : "",
                     Poste = m.Poste,
                     Adresse = m.Adresse,
                     Description = m.Description,
                     TauxHoraire = m.TauxHoraire,
                     Horaires = m.Horaires,
                     DatePublication = m.DatePublication,
-                    NombreCandidatures = 0
+                    NombreCandidatures = 0,
+                    DateMission = m.DateMission,
+                    HeureDebut = m.HeureDebut,
+                    HeureFin = m.HeureFin,
+                    DureeHeures = m.DureeHeures,
+                    EstPlanifiee = m.EstPlanifiee
                 })
                 .FirstOrDefaultAsync();
 
@@ -184,6 +212,20 @@ namespace AleniaAPI.Services
                 mission.TauxHoraire = updateDto.TauxHoraire.Value;
             if (updateDto.Horaires != null)
                 mission.Horaires = updateDto.Horaires;
+            
+            // Mise à jour des champs de planification
+            if (updateDto.DateMission.HasValue)
+                mission.DateMission = updateDto.DateMission;
+            if (updateDto.HeureDebut.HasValue)
+                mission.HeureDebut = updateDto.HeureDebut;
+            if (updateDto.HeureFin.HasValue)
+                mission.HeureFin = updateDto.HeureFin;
+            if (updateDto.DureeHeures.HasValue)
+                mission.DureeHeures = updateDto.DureeHeures;
+            if (updateDto.EstPlanifiee.HasValue)
+                mission.EstPlanifiee = updateDto.EstPlanifiee.Value;
+            else
+                mission.EstPlanifiee = mission.DateMission.HasValue && mission.HeureDebut.HasValue;
 
             await _context.SaveChangesAsync();
 
@@ -196,13 +238,19 @@ namespace AleniaAPI.Services
                     Id = m.Id,
                     EtablissementId = m.EtablissementId,
                     EtablissementNom = m.Etablissement != null ? m.Etablissement.Nom : "",
+                    EtablissementTelephone = m.Etablissement != null ? m.Etablissement.Telephone : "",
                     Poste = m.Poste,
                     Adresse = m.Adresse,
                     Description = m.Description,
                     TauxHoraire = m.TauxHoraire,
                     Horaires = m.Horaires,
                     DatePublication = m.DatePublication,
-                    NombreCandidatures = m.Candidatures.Count
+                    NombreCandidatures = m.Candidatures.Count,
+                    DateMission = m.DateMission,
+                    HeureDebut = m.HeureDebut,
+                    HeureFin = m.HeureFin,
+                    DureeHeures = m.DureeHeures,
+                    EstPlanifiee = m.EstPlanifiee
                 })
                 .FirstOrDefaultAsync();
         }
@@ -242,13 +290,19 @@ namespace AleniaAPI.Services
                     Id = m.Id,
                     EtablissementId = m.EtablissementId,
                     EtablissementNom = m.Etablissement != null ? m.Etablissement.Nom : "",
+                    EtablissementTelephone = m.Etablissement != null ? m.Etablissement.Telephone : "",
                     Poste = m.Poste,
                     Adresse = m.Adresse,
                     Description = m.Description,
                     TauxHoraire = m.TauxHoraire,
                     Horaires = m.Horaires,
                     DatePublication = m.DatePublication,
-                    NombreCandidatures = m.Candidatures.Count
+                    NombreCandidatures = m.Candidatures.Count,
+                    DateMission = m.DateMission,
+                    HeureDebut = m.HeureDebut,
+                    HeureFin = m.HeureFin,
+                    DureeHeures = m.DureeHeures,
+                    EstPlanifiee = m.EstPlanifiee
                 })
                 .ToListAsync();
         }
